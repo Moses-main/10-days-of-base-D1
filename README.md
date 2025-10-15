@@ -34,9 +34,38 @@ Before you begin, make sure you have the following installed:
    BASESCAN_API_KEY=your_basescan_api_key
    ```
 
-## Deploying the Greeter Contract
+## Deployment
 
-To deploy the Greeter contract to Base Sepolia testnet, run:
+### Using Foundry Script (Recommended)
+
+We've provided a deployment script that makes it easy to deploy and interact with the Greeter contract:
+
+1. **Deploy the contract**:
+   ```bash
+   # Deploy to Base Sepolia
+   forge script script/DeployGreeter.s.sol:DeployGreeter \
+     --rpc-url $BASE_SEPOLIA_RPC_URL \
+     --broadcast \
+     --verify \
+     --etherscan-api-key $BASESCAN_API_KEY \
+     -vvvv
+   ```
+
+2. **Interact with the deployed contract**:
+   ```bash
+   # Get the current greeting
+   cast call <CONTRACT_ADDRESS> "getGreeting()(string)" --rpc-url $BASE_SEPOLIA_RPC_URL
+   
+   # Set a new greeting (requires private key)
+   cast send <CONTRACT_ADDRESS> \
+     "setGreeting(string)" "New Greeting" \
+     --private-key $PRIVATE_KEY \
+     --rpc-url $BASE_SEPOLIA_RPC_URL
+   ```
+
+### Manual Deployment
+
+Alternatively, you can deploy the contract directly:
 
 ```bash
 forge create src/Greeter.sol:Greet \
@@ -64,10 +93,13 @@ Replace `<YOUR_CONTRACT_ADDRESS>` with the address returned from the deployment 
 
 ## Project Structure
 
-- `src/`: Contains the smart contract source code
+- `src/`
   - `Greeter.sol`: The main contract that stores and retrieves a greeting message
-- `test/`: Contains test files
-- `script/`: Contains deployment scripts
+- `test/`
+  - `Greeter.t.sol`: Test file with unit tests for the Greeter contract
+- `script/`
+  - `DeployGreeter.s.sol`: Script to deploy and interact with the Greeter contract
+  - `Counter.s.sol`: Example script (not used in this project)
 
 ## Development Commands
 
