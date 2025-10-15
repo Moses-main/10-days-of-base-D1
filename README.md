@@ -77,11 +77,40 @@ Replace `<YOUR_CONTRACT_ADDRESS>` with the address returned from the deployment 
 forge build
 ```
 
-### Test
+### Testing the Contract
+
+We've included a comprehensive test suite for the Greeter contract. The tests cover:
+
+- Initial greeting setup
+- Updating the greeting
+- Retrieving the current greeting
+- Fuzz testing with random inputs
+
+To run the tests:
 
 ```bash
+# Run all tests
 forge test
+
+# Run a specific test with detailed output
+forge test --match-test testSetGreeting -vvv
+
+# Run with gas report
+forge test --gas-report
+
+# Run fuzz tests with a specific number of runs
+forge test --match-test testFuzz_SetGreeting -vvv --fuzz-runs 1000
 ```
+
+#### Test Coverage
+
+To generate a test coverage report:
+
+```bash
+forge coverage
+```
+
+This will show you which lines of your contract are being tested and help identify any untested code paths.
 
 ### Format Code
 
@@ -95,11 +124,37 @@ forge fmt
 anvil
 ```
 
+## Testing Locally with Anvil
+
+You can test the contract locally using Anvil, Foundry's local testnet:
+
+```bash
+# In terminal 1: Start Anvil
+anvil
+
+# In terminal 2: Deploy to local node
+forge create --rpc-url http://127.0.0.1:8545 \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --constructor-args "Hello Local Test" \
+  src/Greeter.sol:Greet
+
+# Interact with the contract using cast
+# Get greeting
+cast call <CONTRACT_ADDRESS> "getGreeting()(string)" --rpc-url http://127.0.0.1:8545
+
+# Set new greeting
+cast send <CONTRACT_ADDRESS> "setGreeting(string)" "New Local Greeting" \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --rpc-url http://127.0.0.1:8545
+```
+
 ## Next Steps
 
 1. Interact with your deployed contract using [Etherscan](https://sepolia.basescan.org/)
 2. Try updating the greeting message
 3. Explore the contract's functions using a block explorer
+4. Write additional test cases to cover more scenarios
+5. Add events to the contract for better off-chain tracking
 
 ## Resources
 
